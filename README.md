@@ -1,5 +1,5 @@
 # gulp-balmung
-
+[![Build Status](https://travis-ci.org/HAKASHUN/gulp-balmung.svg?branch=master)](https://travis-ci.org/HAKASHUN/gulp-balmung)
 > [gulp](https://github.com/wearefractal/gulp) plugin to run balmung image optimizer.
 
 ## Usage
