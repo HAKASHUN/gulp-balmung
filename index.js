@@ -14,6 +14,11 @@ var through = require('through2'),
 module.exports = function (param) {
 	'use strict';
 
+  var stream = through.obj(function(file, enc, callback) {
+    this.push(file);
+    callback();
+  });
+
   var list = [];
   var config = param.config || {};
 
@@ -26,22 +31,31 @@ module.exports = function (param) {
     config: config
   });
 
+  // execute balmung plugin
+  plugin();
+
+  return stream;
+
+  //
+  // methods
+  //
+
   /**
    * Balmung Plugin
    */
-  function plugin(file, enc, callback) {
-    var self = this;
+  function plugin() {
     loadConfig()
       .then(resize, function() {
-        self.emit("error",
-          new gutil.PluginError("gulp-balmung", "Resize is failed."));
+        stream.emit('error', new gutil.PluginError('gulp-balmung',  "Resize is failed."));
+        stream.end();
       })
       .then(optimize, function() {
-        self.emit("error",
-          new gutil.PluginError("gulp-balmung", "Optimize is failed."));
+        stream.emit('error', new gutil.PluginError('gulp-balmung',  "Optimize is failed."));
+        stream.end();
       })
       .then(function() {
-        callback();
+        stream.write();
+        stream.end();
       });
   }
 
@@ -94,6 +108,4 @@ module.exports = function (param) {
     resizer.on('finish', d.resolve);
     return d.promise;
   }
-
-	return through.obj(plugin);
 };

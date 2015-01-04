@@ -43,8 +43,6 @@ describe("gulp-balmung", function () {
       done();
 		});
 
-    stream.write();
-		stream.end();
 	});
 
 });
