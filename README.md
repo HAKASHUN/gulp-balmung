@@ -1,7 +1,4 @@
-(PLUGIN AUTHOR: Please read [Plugin README conventions](https://github.com/wearefractal/gulp/wiki/Plugin-README-Conventions), then delete this line)
-
 # gulp-balmung
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
 > balmung plugin for [gulp](https://github.com/wearefractal/gulp)
 

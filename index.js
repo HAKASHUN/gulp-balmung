@@ -1,49 +1,99 @@
-var through = require("through2"),
-	gutil = require("gulp-util");
+/*
+ * gulp-balmung
+ * https://github.com/HAKASHUN/gulp-balmung
+ *
+ * Copyright (c) 2014 HAKASHUN
+ * Licensed under the MIT license.
+ */
+
+var through = require('through2'),
+	gutil = require('gulp-util'),
+  balmung = require('balmung'),
+  Q = require('q');
 
 module.exports = function (param) {
-	"use strict";
+	'use strict';
 
-	// if necessary check for required param(s), e.g. options hash, etc.
-	if (!param) {
-		throw new gutil.PluginError("gulp-balmung", "No param supplied");
-	}
+  var list = [];
+  var config = param.config || {};
 
-	// see "Writing a plugin"
-	// https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/README.md
-	function balmung(file, enc, callback) {
-		/*jshint validthis:true*/
+  if(!config.settings) {
+    config.settings = {};
+  }
 
-		// Do nothing if no contents
-		if (file.isNull()) {
-			this.push(file);
-			return callback();
-		}
+  // Create Balmung Tools
+  var tools = balmung.createTools({
+    config: config
+  });
 
-		if (file.isStream()) {
+  /**
+   * Balmung Plugin
+   */
+  function plugin(file, enc, callback) {
+    var self = this;
+    loadConfig()
+      .then(resize, function() {
+        self.emit("error",
+          new gutil.PluginError("gulp-balmung", "Resize is failed."));
+      })
+      .then(optimize, function() {
+        self.emit("error",
+          new gutil.PluginError("gulp-balmung", "Optimize is failed."));
+      })
+      .then(function() {
+        callback();
+      });
+  }
 
-			// http://nodejs.org/api/stream.html
-			// http://nodejs.org/api/child_process.html
-			// https://github.com/dominictarr/event-stream
+  /**
+   * load Balmung Config
+   * @returns {promise|*|r.promise|Q.promise|x.ready.promise}
+   */
+  function loadConfig() {
+    var d = Q.defer();
+    tools.settings.load(tools.config, function(err) {
+      if(err) {
+        return d.reject(err);
+      }
+      d.resolve();
+    });
+    return d.promise;
+  }
 
-			// accepting streams is optional
-			this.emit("error",
-				new gutil.PluginError("gulp-balmung", "Stream content is not supported"));
-			return callback();
-		}
+  /**
+   * Optimize Resized Images
+   * @returns {promise|*|r.promise|Q.promise|x.ready.promise}
+   */
+  function optimize() {
+    var d = Q.defer();
+    var optimizer = tools.optimizer;
+    if(list.length === 0) {
+      d.resolve();
+    } else {
+      list.forEach(function(task) {
+        optimizer.optimize(task.base, task.file, task.ratio);
+      });
+      optimizer.on('error', d.reject);
+      optimizer.on('finish', d.resolve);
+    }
+    return d.promise;
+  }
 
-		// check if file.contents is a `Buffer`
-		if (file.isBuffer()) {
+  /**
+   * Resize Images
+   * @returns {promise|*|r.promise|Q.promise|x.ready.promise}
+   */
+  function resize() {
+    var d = Q.defer();
+    var resizer = tools.resizer;
+    resizer.resize();
+    resizer.on('resize', function(task) {
+      list.push(task);
+    });
+    resizer.on('error', d.reject);
+    resizer.on('finish', d.resolve);
+    return d.promise;
+  }
 
-			// manipulate buffer in some way
-			// http://nodejs.org/api/buffer.html
-			file.contents = new Buffer(String(file.contents) + "\n" + param);
-
-			this.push(file);
-
-		}
-		return callback();
-	}
-
-	return through.obj(balmung);
+	return through.obj(plugin);
 };

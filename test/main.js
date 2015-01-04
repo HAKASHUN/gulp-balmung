@@ -14,99 +14,37 @@ var gutil = require("gulp-util"),
 
 describe("gulp-balmung", function () {
 
-	var expectedFile = new gutil.File({
-		path: "test/expected/hello.txt",
-		cwd: "test/",
-		base: "test/expected",
-		contents: fs.readFileSync("test/expected/hello.txt")
-	});
+  // set timeout limit to 30s.
+  this.timeout(30000);
 
-	it("should produce expected file via buffer", function (done) {
+	it("should resize and optimize", function (done) {
+    var original = fs.statSync('test/fixtures/buki_l.png');
+		var stream = balmung({
+      config: {
+        datadir: 'test',
+        settings: {},
+        src: 'test/fixtures/',
+        dst: 'test/expected/'
+      }
+    });
 
-		var srcFile = new gutil.File({
-			path: "test/fixtures/hello.txt",
-			cwd: "test/",
-			base: "test/fixtures",
-			contents: fs.readFileSync("test/fixtures/hello.txt")
+		stream.on("finish", function() {
+      var actual = fs.statSync('test/expected/buki_l_30.png');
+      (actual.size).should.be.below(original.size);
+
+      [
+        'test/expected/buki_l_10.png',
+        'test/expected/buki_l_13.png',
+        'test/expected/buki_l_15.png',
+        'test/expected/buki_l_20.png',
+        'test/expected/buki_l_30.png'
+      ].forEach(fs.statSync);
+
+      done();
 		});
 
-		var stream = balmung("World");
-
-		stream.on("error", function(err) {
-			should.exist(err);
-			done(err);
-		});
-
-		stream.on("data", function (newFile) {
-
-			should.exist(newFile);
-			should.exist(newFile.contents);
-
-			String(newFile.contents).should.equal(String(expectedFile.contents));
-			done();
-		});
-
-		stream.write(srcFile);
+    stream.write();
 		stream.end();
 	});
 
-	it("should error on stream", function (done) {
-
-		var srcFile = new gutil.File({
-			path: "test/fixtures/hello.txt",
-			cwd: "test/",
-			base: "test/fixtures",
-			contents: fs.createReadStream("test/fixtures/hello.txt")
-		});
-
-		var stream = balmung("World");
-
-		stream.on("error", function(err) {
-			should.exist(err);
-			done();
-		});
-
-		stream.on("data", function (newFile) {
-			newFile.contents.pipe(es.wait(function(err, data) {
-				done(err);
-			}));
-		});
-
-		stream.write(srcFile);
-		stream.end();
-	});
-
-	/*
-	it("should produce expected file via stream", function (done) {
-
-		var srcFile = new gutil.File({
-			path: "test/fixtures/hello.txt",
-			cwd: "test/",
-			base: "test/fixtures",
-			contents: fs.createReadStream("test/fixtures/hello.txt")
-		});
-
-		var stream = balmung("World");
-
-		stream.on("error", function(err) {
-			should.exist(err);
-			done();
-		});
-
-		stream.on("data", function (newFile) {
-
-			should.exist(newFile);
-			should.exist(newFile.contents);
-
-			newFile.contents.pipe(es.wait(function(err, data) {
-				should.not.exist(err);
-				data.should.equal(String(expectedFile.contents));
-				done();
-			}));
-		});
-
-		stream.write(srcFile);
-		stream.end();
-	});
-	*/
 });

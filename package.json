@@ -2,7 +2,7 @@
 {
   "name": "gulp-balmung",
   "version": "0.0.0",
-  "description": "A plugin for Gulp",
+  "description": "Gulp plugin to run balmung image optimizer.",
   "keywords": [
     "gulpplugin"
   ],
@@ -18,7 +18,9 @@
   },
   "dependencies": {
     "through2": "*",
-    "gulp-util": "~2.2.0"
+    "gulp-util": "~2.2.0",
+    "balmung": "~0.3.0",
+    "q": "*"
   },
   "devDependencies": {
     "mocha": "*",
