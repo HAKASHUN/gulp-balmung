@@ -7,12 +7,12 @@
  */
 
 var through = require('through2'),
-	gutil = require('gulp-util'),
+  gutil = require('gulp-util'),
   balmung = require('balmung'),
   Q = require('q');
 
 module.exports = function (param) {
-	'use strict';
+  'use strict';
 
   var stream = through.obj(function(file, enc, callback) {
     this.push(file);

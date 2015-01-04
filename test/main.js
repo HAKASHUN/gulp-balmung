@@ -2,24 +2,24 @@
 "use strict";
 
 var fs = require("fs"),
-	es = require("event-stream"),
-	should = require("should");
+  es = require("event-stream"),
+  should = require("should");
 
 require("mocha");
 
 delete require.cache[require.resolve("../")];
 
 var gutil = require("gulp-util"),
-	balmung = require("../");
+  balmung = require("../");
 
 describe("gulp-balmung", function () {
 
   // set timeout limit to 30s.
   this.timeout(30000);
 
-	it("should resize and optimize", function (done) {
+  it("should resize and optimize", function (done) {
     var original = fs.statSync('test/fixtures/buki_l.png');
-		var stream = balmung({
+    var stream = balmung({
       config: {
         datadir: 'test',
         settings: {},
@@ -28,7 +28,7 @@ describe("gulp-balmung", function () {
       }
     });
 
-		stream.on("finish", function() {
+    stream.on("finish", function() {
       var actual = fs.statSync('test/expected/buki_l_30.png');
       (actual.size).should.be.below(original.size);
 
@@ -41,8 +41,8 @@ describe("gulp-balmung", function () {
       ].forEach(fs.statSync);
 
       done();
-		});
+    });
 
-	});
+  });
 
 });

@@ -15,23 +15,25 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var balmung = require("gulp-balmung");
 
-gulp.src("./src/*.ext")
-	.pipe(balmung({
-		msg: "Hello Gulp!"
-	}))
-	.pipe(gulp.dest("./dist"));
+gulp.task('balmung', function() {
+  return balmung({
+    config: {
+        src: 'content/images',
+        dst: 'output/images'
+    }
+  });
+});
+
 ```
 
 ## API
 
 ### balmung(options)
 
-#### options.msg
-Type: `String`  
-Default: `Hello World`
+#### options.config
+Type: `Object`  
 
-The message you wish to attach to file.
-
+See the balmung [configuration](https://github.com/suguru/balmung#configuration).
 
 ## License
 
