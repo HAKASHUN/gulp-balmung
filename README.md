@@ -1,5 +1,4 @@
 # gulp-balmung
-[![Build Status](https://travis-ci.org/HAKASHUN/gulp-balmung.svg?branch=master)](https://travis-ci.org/HAKASHUN/gulp-balmung)
 > [gulp](https://github.com/wearefractal/gulp) plugin to run balmung image optimizer.
 
 ## Usage
@@ -41,12 +40,3 @@ See the balmung [configuration](https://github.com/suguru/balmung#configuration)
 
 [npm-url]: https://npmjs.org/package/gulp-balmung
 [npm-image]: https://badge.fury.io/js/gulp-balmung.png
-
-[travis-url]: http://travis-ci.org/HAKASHUN/gulp-balmung
-[travis-image]: https://secure.travis-ci.org/HAKASHUN/gulp-balmung.png?branch=master
-
-[coveralls-url]: https://coveralls.io/r/HAKASHUN/gulp-balmung
-[coveralls-image]: https://coveralls.io/repos/HAKASHUN/gulp-balmung/badge.png
-
-[depstat-url]: https://david-dm.org/HAKASHUN/gulp-balmung
-[depstat-image]: https://david-dm.org/HAKASHUN/gulp-balmung.png
