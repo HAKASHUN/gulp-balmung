@@ -1,6 +1,6 @@
 # gulp-balmung
 
-> balmung plugin for [gulp](https://github.com/wearefractal/gulp)
+> [gulp](https://github.com/wearefractal/gulp) plugin to run balmung image optimizer.
 
 ## Usage
 
